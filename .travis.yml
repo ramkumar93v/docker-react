@@ -1,0 +1,6 @@
+sudo: required # need super user permission
+services:
+  - docker # need docker copy
+
+before_install:
+  - docker build -t ramkumar93v/docker-react -f Dockerfile.dev .
