@@ -1,29 +1,29 @@
 pipeline {
-        environment {
-            registry = "ramkumarv93/samplereactapp"
-            registryCredential = 'dockerhub'
-            dockerImage = ''
+    environment {
+        registry = "ramkumarv93/samplereactapp"
+        registryCredential = 'dockerhub'
+        dockerImage = ''
+    }
+    agent any
+    stage('Building our image') {
+    steps{
+        script {
+            dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
-        agent any
-        stage('Building our image') {
+    }
+}
+    stage('Deploy our image') {
         steps{
             script {
-                dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                docker.withRegistry( '', registryCredential ) {
+                dockerImage.push()
             }
         }
     }
-        stage('Deploy our image') {
-            steps{
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                    dockerImage.push()
-                }
-            }
+}
+    stage('Cleaning up') {
+        steps{
+            sh "docker rmi $registry:$BUILD_NUMBER"
         }
     }
-        stage('Cleaning up') {
-            steps{
-                sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-        }
 }
