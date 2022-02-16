@@ -9,9 +9,10 @@ pipeline {
         CI = 'true'
     }
     stages {
-        stage('Build') {
+        stage('Docker Build') {
+            agent any
             steps {
-                sh 'npm install'
+                sh 'docker build -t ramkv/react-jenkins:latest .'
             }
         }
         stage('Test') {
